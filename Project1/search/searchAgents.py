@@ -468,14 +468,10 @@ def foodHeuristic(state, problem):
     if len(foodList) < 1:
         return 0
 
-    def getNearest(start, options): return min([(util.manhattanDistance(start, corner), corner) for corner in options])
-    def getFathest(start, options): return max([(util.manhattanDistance(start, corner), corner) for corner in options])
+    farthest = max([(util.manhattanDistance(position, food), food) for food in foodList])
 
-    # Heuristic - find all foods to visit, find straight line manhattan distance to the
-    # farthest and add the number of food pellets left, exponentially weighted
+    return mazeDistance(position, farthest[1], problem.startingGameState)
     
-    dists = [util.manhattanDistance(position, food) for food in foodList]
-    return sum(dists) / len(foodList)
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
