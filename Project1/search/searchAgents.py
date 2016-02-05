@@ -473,7 +473,7 @@ def foodHeuristic(state, problem):
 
     # Heuristic - find all foods to visit, find straight line manhattan distance to the
     # farthest and add the number of food pellets left, exponentially weighted
-
+    
     dists = [util.manhattanDistance(position, food) for food in foodList]
     return sum(dists) / len(foodList)
 
