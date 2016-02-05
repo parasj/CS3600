@@ -473,18 +473,9 @@ def foodHeuristic(state, problem):
 
     # Heuristic - find all foods to visit, find straight line manhattan distance to the
     # farthest and add the number of food pellets left, exponentially weighted
-    (pos, c) = state
-    pending = set(foodGrid.asList())
-    
-    h = 0
-    if len(pending) == 0: return 0
 
-    (cost, nextpos) = getFathest(pos, pending)
-    h += cost
-    pending.remove(nextpos)
-    pos = nextpos
-    
-    return h
+    dists = [util.manhattanDistance(position, food) for food in foodList]
+    return sum(dists) / len(foodList)
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
