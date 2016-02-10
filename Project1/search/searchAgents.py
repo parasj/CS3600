@@ -466,28 +466,14 @@ def foodHeuristic(state, problem):
     foodList = foodGrid.asList()
 
     def getNearest(start, options): return min([(util.manhattanDistance(start, corner), corner) for corner in options])
+    def getFarthest(start, options): return max([(util.manhattanDistance(start, corner), corner) for corner in options])
 
     if len(foodList) < 1:
         return 0
 
+    (farthestDist, farthest) = getFarthest(position, foodList)
 
-    dist = 0
-
-    notVisited = set(foodList)
-    (nearestDist, nearest) = getNearest(position, notVisited)
-    # print((nearestDist, nearest))
-    notVisited.remove(nearest)
-    position = nearest
-    dist += nearestDist
-
-    while len(notVisited) > 0:
-        (nearestDist, nearest) = getNearest(position, notVisited)
-        # print((nearestDist, nearest))
-        notVisited.remove(nearest)
-        position = nearest
-        dist += (nearestDist / (len(foodList) - len(notVisited) + 1))
-
-    return dist
+    return farthestDist
     
 
 class ClosestDotSearchAgent(SearchAgent):
