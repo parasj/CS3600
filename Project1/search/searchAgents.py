@@ -283,9 +283,6 @@ class CornersProblem(search.SearchProblem):
             if not startingGameState.hasFood(*corner):
                 print 'Warning: no food in corner ' + str(corner)
         self._expanded = 0 # Number of search nodes expanded
-        # Please add any code here which you would like to use
-        # in initializing the problem
-        "*** YOUR CODE HERE ***"
 
     def getStartState(self):
         "Returns the start state (in your state space, not the full Pacman state space)"
@@ -462,38 +459,48 @@ def foodHeuristic(state, problem):
       problem.heuristicInfo['wallCount'] = problem.walls.count()
     Subsequent calls to this heuristic can access problem.heuristicInfo['wallCount']
     """
-
     return mstFoodHeuristicSolver(state, problem)
 
 
 def mstFoodHeuristicSolver(state, problem):
-    position, foodGrid = state
-    foodList = foodGrid.asList()
+    # Heuristic that constructs a MST to model the relaxed problem of going to the nearest
+    # food and finding a minimal straight line path (tree) to all food.
 
-    def distFn(x):
-        return util.manhattanDistance(x[0], x[1])
+    position, foodGrid = state
+    foodList = set(foodGrid.asList())
+    wallList = problem.walls.asList()
+
+    def intelliDist(x, y, wallList):
+        distance = util.manhattanDistance(x, y)
+        if x[0] == y[0] or x[1] == y[1]:
+            for wall in wallList:
+                if x[1] == y[1] and wall[1] == x[1] and min(x[0], y[0]) < wall[0] < max(x[0], y[0]):
+                    return distance + 2
+                elif x[0] == y[0] and wall[0] == x[0] and min(x[1], y[1]) < wall[1] < max(x[1], y[1]):
+                    return distance + 2
+        return distance
 
     if len(foodList) < 1:
         return 0
 
     distToAllFoodsFromPacman = [(util.manhattanDistance(position, food), food) for food in foodList]
     pacmanDistanceFactor = min(distToAllFoodsFromPacman)
-    mstDistanceFactor = mstDistance(foodList, distFn, pacmanDistanceFactor[1])
-
+    farthest = max(distToAllFoodsFromPacman)[1]
+    mstDistanceFactor = mstSolverPrim(foodList, wallList, pacmanDistanceFactor[1], intelliDist)
     return pacmanDistanceFactor[0] + mstDistanceFactor
 
 
-def mstDistance(foodList, dist, start):
-    frontier = set()
-    frontier.add(start)
-    d = 0
+def mstSolverPrim(foodList, wallList, start, dist):
+    # implementation of prim's algo, basically O(V^2) since foodList is generally short
+    frontier = set([start])
+    mstDistance = 0
     while len(frontier) != len(foodList):
         minsearchset = [(x, k) for x in frontier for k in foodList if k not in frontier]
-        edge = sorted(set(minsearchset), key=dist)[0]
+        edge = sorted(set(minsearchset), key=lambda x: dist(x[0], x[1], wallList))[0]
         frontier.add(edge[1])
-        d += dist(edge)
+        mstDistance += dist(edge[0], edge[1], wallList)
+    return mstDistance
 
-    return d
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
