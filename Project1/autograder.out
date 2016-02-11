@@ -1,4 +1,4 @@
-Starting on 2-5 at 12:11:18
+Starting on 2-11 at 0:02:23
 
 Question q1
 ===========
@@ -157,7 +157,7 @@ Question q7
 *** PASS: test_cases/q7/food_heuristic_8.test
 *** PASS: test_cases/q7/food_heuristic_9.test
 *** PASS: test_cases/q7/food_heuristic_grade_tricky.test
-*** 	expanded nodes: 5349
+*** 	expanded nodes: 6365
 *** 	thresholds: [15000, 12000, 9000, 7000]
 
 ### Question q7: 5/4 ###
@@ -238,7 +238,7 @@ Question q8
 Question extra
 ==============
 
-*** Method not implemented: getAction at line 557 of searchAgents.py
+*** Method not implemented: getAction at line 586 of searchAgents.py
 *** FAIL: test_cases/extra/extra.test
 *** 	Extra credit threw an exception: global name 'TimeoutFunctionException' is not defined.
 Traceback (most recent call last):
@@ -251,7 +251,7 @@ NameError: global name 'TimeoutFunctionException' is not defined
 ### Question extra: 0/0 ###
 
 
-Finished at 12:11:23
+Finished at 0:02:33
 
 Provisional grades
 ==================
