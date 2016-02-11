@@ -462,19 +462,38 @@ def foodHeuristic(state, problem):
       problem.heuristicInfo['wallCount'] = problem.walls.count()
     Subsequent calls to this heuristic can access problem.heuristicInfo['wallCount']
     """
+
+    return mstFoodHeuristicSolver(state, problem)
+
+
+def mstFoodHeuristicSolver(state, problem):
     position, foodGrid = state
     foodList = foodGrid.asList()
 
-    def getNearest(start, options): return min([(util.manhattanDistance(start, corner), corner) for corner in options])
-    def getFarthest(start, options): return max([(util.manhattanDistance(start, corner), corner) for corner in options])
+    def distFn(x):
+        return util.manhattanDistance(x[0], x[1])
 
     if len(foodList) < 1:
         return 0
 
-    (farthestDist, farthest) = getFarthest(position, foodList)
+    distToAllFoodsFromPacman = [(util.manhattanDistance(position, food), food) for food in foodList]
+    pacmanDistanceFactor = min(distToAllFoodsFromPacman)
+    mstDistanceFactor = mstDistance(foodList, distFn, pacmanDistanceFactor[1])
 
-    return farthestDist
-    
+    return pacmanDistanceFactor[0] + mstDistanceFactor
+
+
+def mstDistance(foodList, dist, start):
+    frontier = set()
+    frontier.add(start)
+    d = 0
+    while len(frontier) != len(foodList):
+        minsearchset = [(x, k) for x in frontier for k in foodList if k not in frontier]
+        edge = sorted(set(minsearchset), key=dist)[0]
+        frontier.add(edge[1])
+        d += dist(edge)
+
+    return d
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
