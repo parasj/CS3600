@@ -186,9 +186,9 @@ class Assignment:
 """
 def consistent(assignment, csp, var, value):
  	"""Question 1"""
-	"""YOUR CODE HERE"""
-
-	return True
+	us = [not uc.affects(var) or uc.isSatisfied(value) for uc in csp.unaryConstraints]
+	bs = [not bc.affects(var) or not assignment.isAssigned(bc.otherVariable(var)) or bc.isSatisfied(value, assignment.assignedValues[bc.otherVariable(var)]) for bc in csp.binaryConstraints]
+	return all(us) and all(bs)
 
 
 """
