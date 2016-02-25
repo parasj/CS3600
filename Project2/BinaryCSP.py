@@ -274,8 +274,23 @@ def chooseFirstVariable(assignment, csp):
 def minimumRemainingValuesHeuristic(assignment, csp):
 	nextVar = None
 	domains = assignment.varDomains
+
+	def constraintCounter(assignment, csp, var):
+		return len([const for const in csp.binaryConstraints
+						if const.affects(var)
+							and not assignment.isAssigned(const.otherVariable(var))])
+
 	"""Question 2"""
-	"""YOUR CODE HERE"""
+	unassignedVars = [var for var in domains if not assignment.isAssigned(var)]
+	lengths = [(len(domains[var]), var) for var in unassignedVars]
+	minlengths = [length[1] for length in lengths if length[0] is min(lengths)[0]]
+
+	if len(minlengths) is 0:
+		nextVar = None
+	elif len(minlengths) is 1 or len(csp.binaryConstraints) is 0:
+		nextVar = minlengths[0]
+	else:
+		nextVar = max([(constraintCounter(assignment, csp, var), var) for var in minlengths])[1]
 
 	return nextVar
 
@@ -305,7 +320,7 @@ def leastConstrainingValuesHeuristic(assignment, csp, var):
 	values = list(assignment.varDomains[var])
 	"""Hint: Creating a helper function to count the number of constrained values might be useful"""
 	"""Question 3"""
-	"""YOUR CODE HERE"""
+	
 
 	return values
 
