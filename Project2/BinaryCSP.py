@@ -217,12 +217,20 @@ def consistent(assignment, csp, var, value):
 """
 def recursiveBacktracking(assignment, csp, orderValuesMethod, selectVariableMethod):
 	"""Question 1"""
-	"""YOUR CODE HERE"""
+	if assignment.isComplete(): return assignment
+	var = selectVariableMethod(assignment, csp)
+	for value in orderValuesMethod(assignment, csp, var):
+		undo = assignment.assignedValues[var]
+		if consistent(assignment, csp, var, value):
+			assignment.assignedValues[var] = value
+			result = recursiveBacktracking(assignment, csp, orderValuesMethod, selectVariableMethod)
+			if result: return result
+		assignment.assignedValues[var] = undo
 	return None
 
 
 """
-	Uses unary constraints to eleminate values from an assignment.
+	Uses unary constraints to eliminate values from an assignment.
 
 	Args:
 		assignment (Assignment): a partial assignment to expand upon
