@@ -79,7 +79,7 @@ class NotEqualConstraint(BinaryConstraint):
 		return True
 
 	def __repr__(self):
-	    return 'NotEqualConstraint (%s, %s)' % (str(self.var1), str(self.var2))
+		return 'NotEqualConstraint (%s, %s)' % (str(self.var1), str(self.var2))
 
 
 class ConstraintSatisfactionProblem:
@@ -102,10 +102,10 @@ class ConstraintSatisfactionProblem:
 		self.unaryConstraints = unaryConstraints
 
 	def __repr__(self):
-	    return '---Variable Domains\n%s---Binary Constraints\n%s---Unary Constraints\n%s' % ( \
-	        ''.join([str(e) + ':' + str(self.varDomains[e]) + '\n' for e in self.varDomains]), \
-	        ''.join([str(e) + '\n' for e in self.binaryConstraints]), \
-	        ''.join([str(e) + '\n' for e in self.binaryConstraints]))
+		return '---Variable Domains\n%s---Binary Constraints\n%s---Unary Constraints\n%s' % ( \
+			''.join([str(e) + ':' + str(self.varDomains[e]) + '\n' for e in self.varDomains]), \
+			''.join([str(e) + '\n' for e in self.binaryConstraints]), \
+			''.join([str(e) + '\n' for e in self.binaryConstraints]))
 
 
 class Assignment:
@@ -161,9 +161,9 @@ class Assignment:
 		return self.assignedValues
 
 	def __repr__(self):
-	    return '---Variable Domains\n%s---Assigned Values\n%s' % ( \
-	        ''.join([str(e) + ':' + str(self.varDomains[e]) + '\n' for e in self.varDomains]), \
-	        ''.join([str(e) + ':' + str(self.assignedValues[e]) + '\n' for e in self.assignedValues]))
+		return '---Variable Domains\n%s---Assigned Values\n%s' % ( \
+			''.join([str(e) + ':' + str(self.varDomains[e]) + '\n' for e in self.varDomains]), \
+			''.join([str(e) + ':' + str(self.assignedValues[e]) + '\n' for e in self.assignedValues]))
 
 
 
@@ -185,7 +185,7 @@ class Assignment:
 		True if the value would be consistent with all currently assigned values, False otherwise
 """
 def consistent(assignment, csp, var, value):
- 	"""Question 1"""
+	"""Question 1"""
 	us = [not uc.affects(var)
 			or uc.isSatisfied(value)
 				for uc in csp.unaryConstraints]
@@ -247,8 +247,8 @@ def eliminateUnaryConstraints(assignment, csp):
 			for value in (v for v in list(domains[var]) if not constraint.isSatisfied(v)):
 				domains[var].remove(value)
 				if len(domains[var]) == 0:
-				 	# Failure due to invalid assignment
-				 	return None
+					# Failure due to invalid assignment
+					return None
 	return assignment
 
 
@@ -329,6 +329,9 @@ def leastConstrainingValuesHeuristic(assignment, csp, var):
 def noInferences(assignment, csp, var, value):
 	return set([])
 
+def undoInferences(assignment, inferences):
+	for infvar, infval in inferences:
+		assignment.varDomains[infvar].add(infval)
 
 """
 	Implements the forward checking algorithm.
@@ -358,8 +361,7 @@ def forwardChecking(assignment, csp, var, value):
 
 	consistent = [domains[other] and len(domains[other]) > 0 for other, const in deps]
 	if not all(consistent):
-		for infvar, infval in inferences:
-			domains[infvar].add(infval)
+		undoInferences(assignment, inferences)
 		return None
 
 	return inferences
@@ -404,8 +406,7 @@ def recursiveBacktrackingWithInferences(assignment, csp, orderValuesMethod, sele
 					return result
 				else:
 					assignment.assignedValues[var] = None
-					for infvar, infval in inferences:
-						assignment.varDomains[infvar].add(infval)
+					undoInferences(assignment, inferences)
 		assignment.assignedValues = undo
 	return None
 
@@ -429,13 +430,23 @@ def recursiveBacktrackingWithInferences(assignment, csp, orderValuesMethod, sele
 		set<tuple<variable, value>>
 		the inferences made in this call or None if inconsistent assignment
 """
+
 def revise(assignment, csp, var1, var2, constraint):
 	inferences = set([])
-	"""Question 5"""
-	"""YOUR CODE HERE"""
+
+	i1 = [val for val in assignment.varDomains[var1] if not any([val2 for val2 in assignment.varDomains[var2] if constraint.isSatisfied(val2, val)])]
+	assignment.varDomains[var1] = assignment.varDomains[var1].difference(i1)
+	inferences = inferences.union([(var1, val) for val in i1])
+
+	i2 = [val for val in assignment.varDomains[var2] if not any([val1 for val1 in assignment.varDomains[var1] if constraint.isSatisfied(val1, val)])]
+	assignment.varDomains[var2] = assignment.varDomains[var2].difference(i2)
+	inferences = inferences.union([(var2, val) for val in i2])
+	
+	if len(assignment.varDomains[var2]) < 1:
+		undoInferences(assignment, inferences)
+		return None
 
 	return inferences
-
 
 """
 	Implements the maintaining arc consistency algorithm.
@@ -455,12 +466,24 @@ def revise(assignment, csp, var1, var2, constraint):
 """
 def maintainArcConsistency(assignment, csp, var, value):
 	inferences = set([])
-	"""Hint: implement revise first and use it as a helper function"""
-	"""Question 5"""
-	"""YOUR CODE HERE"""
+	domains = assignment.varDomains
+	values = assignment.assignedValues
+
+	q = deque([const for const in csp.binaryConstraints if const.affects(var)])
+	while len(q) > 0:
+		const = q.popleft()
+		var1 = const.var1
+		var2 = const.var2
+
+		revisions = revise(assignment, csp, var1, var2, const)
+		if revisions is None:
+			undoInferences(assignment, inferences)
+			return None
+		elif len(revisions) > 0:
+			inferences = inferences.union(revisions)
+			q.extend([c for c in csp.binaryConstraints if c is not const and const.affects(var2)])
 
 	return inferences
-
 
 """
 	AC3 algorithm for constraint propogation. Used as a preprocessing step to reduce the problem
@@ -475,9 +498,20 @@ def maintainArcConsistency(assignment, csp, var, value):
 """
 def AC3(assignment, csp):
 	inferences = set([])
-	"""Hint: implement revise first and use it as a helper function"""
-	"""Question 6"""
-	"""YOUR CODE HERE"""
+	domains = assignment.varDomains
+	values = assignment.assignedValues
+
+	q = deque(csp.binaryConstraints)
+	while len(q) > 0:
+		const = q.popleft()
+		var1 = const.var1
+		var2 = const.var2
+
+		revisions = revise(assignment, csp, var1, var2, const)
+		if revisions is None:
+			return None
+		elif len(revisions) > 0:
+			q.extend([c for c in csp.binaryConstraints if c is not const and const.affects(var2)])
 
 	return assignment
 
