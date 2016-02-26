@@ -317,12 +317,9 @@ def orderValues(assignment, csp, var):
 		a list of the possible values ordered by the least constraining value heuristic
 """
 def leastConstrainingValuesHeuristic(assignment, csp, var):
-	values = list(assignment.varDomains[var])
-	"""Hint: Creating a helper function to count the number of constrained values might be useful"""
-	"""Question 3"""
-	
-
-	return values
+	deps = [const.otherVariable(var) for const in csp.binaryConstraints if const.affects(var)]
+	return sorted(list(assignment.varDomains[var]),
+		key=lambda val: len([dep for dep in deps if val in assignment.varDomains[dep]]))
 
 
 """
