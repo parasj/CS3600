@@ -216,17 +216,18 @@ def consistent(assignment, csp, var, value):
 		A completed and consistent assignment. None if no solution exists.
 """
 def recursiveBacktracking(assignment, csp, orderValuesMethod, selectVariableMethod):
-	"""Question 1"""
-	if assignment.isComplete(): return assignment
-	var = selectVariableMethod(assignment, csp)
-	for value in orderValuesMethod(assignment, csp, var):
-		undo = assignment.assignedValues[var]
-		if consistent(assignment, csp, var, value):
-			assignment.assignedValues[var] = value
-			result = recursiveBacktracking(assignment, csp, orderValuesMethod, selectVariableMethod)
-			if result: return result
-		assignment.assignedValues[var] = undo
-	return None
+	# if assignment.isComplete(): return assignment
+	# var = selectVariableMethod(assignment, csp)
+	# for value in orderValuesMethod(assignment, csp, var):
+	# 	undo = assignment.assignedValues[var]
+	# 	if consistent(assignment, csp, var, value):
+	# 		assignment.assignedValues[var] = value
+	# 		result = recursiveBacktracking(assignment, csp, orderValuesMethod, selectVariableMethod)
+	# 		if result:
+	# 			return result
+	# 	assignment.assignedValues[var] = undo
+	# return None
+	return recursiveBacktrackingWithInferences(assignment, csp, orderValuesMethod, selectVariableMethod, noInferences)
 
 
 """
@@ -348,8 +349,18 @@ def noInferences(assignment, csp, var, value):
 def forwardChecking(assignment, csp, var, value):
 	inferences = set([])
 	domains = assignment.varDomains
-	"""Question 4"""
-	"""YOUR CODE HERE"""
+
+	deps = [(const.otherVariable(var), const) for const in csp.binaryConstraints if const.affects(var) and assignment.assignedValues[const.otherVariable(var)] is None]
+	inferences = set([(other, otherval) for other, const in deps for otherval in domains[other] if not const.isSatisfied(value, otherval)])
+	
+	for infvar, infval in inferences:
+		domains[infvar].remove(infval)
+
+	consistent = [domains[other] and len(domains[other]) > 0 for other, const in deps]
+	if not all(consistent):
+		for infvar, infval in inferences:
+			domains[infvar].add(infval)
+		return None
 
 	return inferences
 
@@ -380,8 +391,22 @@ def forwardChecking(assignment, csp, var, value):
 		A completed and consistent assignment. None if no solution exists.
 """
 def recursiveBacktrackingWithInferences(assignment, csp, orderValuesMethod, selectVariableMethod, inferenceMethod):
-	"""Question 4"""
-	"""YOUR CODE HERE"""
+	if assignment.isComplete(): return assignment
+	var = selectVariableMethod(assignment, csp)
+	for value in orderValuesMethod(assignment, csp, var):
+		undo = assignment.assignedValues.copy()
+		if consistent(assignment, csp, var, value):
+			assignment.assignedValues[var] = value
+			inferences = inferenceMethod(assignment, csp, var, value)
+			if inferences is not None:
+				result = recursiveBacktracking(assignment, csp, orderValuesMethod, selectVariableMethod)
+				if result:
+					return result
+				else:
+					assignment.assignedValues[var] = None
+					for infvar, infval in inferences:
+						assignment.varDomains[infvar].add(infval)
+		assignment.assignedValues = undo
 	return None
 
 
