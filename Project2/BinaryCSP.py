@@ -481,7 +481,7 @@ def maintainArcConsistency(assignment, csp, var, value):
 			return None
 		elif len(revisions) > 0:
 			inferences = inferences.union(revisions)
-			q.extend([c for c in csp.binaryConstraints if c is not const and const.affects(var2)])
+			q.extend([c for c in csp.binaryConstraints if c is not const and ((c.affects(var2) and not c.affects(var1)) or (c.affects(var1) and not c.affects(var2)))])
 
 	return inferences
 
@@ -511,7 +511,7 @@ def AC3(assignment, csp):
 		if revisions is None:
 			return None
 		elif len(revisions) > 0:
-			q.extend([c for c in csp.binaryConstraints if c is not const and const.affects(var2)])
+			q.extend([c for c in csp.binaryConstraints if c is not const and  ((c.affects(var2) and not c.affects(var1)) or (c.affects(var1) and not c.affects(var2)))])
 
 	return assignment
 
