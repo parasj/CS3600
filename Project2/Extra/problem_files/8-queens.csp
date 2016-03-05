@@ -1,0 +1,38 @@
+1 1 2 3 4 5 6 7 8
+2 1 2 3 4 5 6 7 8
+3 1 2 3 4 5 6 7 8
+4 1 2 3 4 5 6 7 8
+5 1 2 3 4 5 6 7 8
+6 1 2 3 4 5 6 7 8
+7 1 2 3 4 5 6 7 8
+8 1 2 3 4 5 6 7 8
+0
+QueenDoesNotAttack 1 2
+QueenDoesNotAttack 1 3
+QueenDoesNotAttack 1 4
+QueenDoesNotAttack 1 5
+QueenDoesNotAttack 1 6
+QueenDoesNotAttack 1 7
+QueenDoesNotAttack 1 8
+QueenDoesNotAttack 2 3
+QueenDoesNotAttack 2 4
+QueenDoesNotAttack 2 5
+QueenDoesNotAttack 2 6
+QueenDoesNotAttack 2 7
+QueenDoesNotAttack 2 8
+QueenDoesNotAttack 3 4
+QueenDoesNotAttack 3 5
+QueenDoesNotAttack 3 6
+QueenDoesNotAttack 3 7
+QueenDoesNotAttack 3 8
+QueenDoesNotAttack 4 5
+QueenDoesNotAttack 4 6
+QueenDoesNotAttack 4 7
+QueenDoesNotAttack 4 8
+QueenDoesNotAttack 5 6
+QueenDoesNotAttack 5 7
+QueenDoesNotAttack 5 8
+QueenDoesNotAttack 6 7
+QueenDoesNotAttack 6 8
+QueenDoesNotAttack 7 8
+0
