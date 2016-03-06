@@ -1,0 +1,176 @@
+
+____________________________________________________________________
+Testing question: q1
+--------------------------------------------------------------------
+PASS: test_cases/q1/backtracking1unsolvable.test 
+
+PASS: test_cases/q1/backtracking2noconstraints.test 
+
+PASS: test_cases/q1/backtracking3solvable1.test 
+
+PASS: test_cases/q1/backtracking4solvable2.test 
+
+PASS: test_cases/q1/backtracking5incorrectpartial.test 
+
+PASS: test_cases/q1/consistent1consistent1.test 
+
+PASS: test_cases/q1/consistent2consistent2.test 
+
+PASS: test_cases/q1/consistent3consistent3.test 
+
+PASS: test_cases/q1/consistent4inconsistent1.test 
+
+PASS: test_cases/q1/consistent5inconsistent2.test 
+
+--------------------------------------------------------------------
+All tests passed for question q1
+--------------------------------------------------------------------
+
+____________________________________________________________________
+Testing question: q2
+--------------------------------------------------------------------
+PASS: test_cases/q2/backtracking1unsolvable.test 
+
+PASS: test_cases/q2/backtracking2noconstraints.test 
+
+PASS: test_cases/q2/backtracking3solvable1.test 
+
+PASS: test_cases/q2/backtracking4solvable2.test 
+
+PASS: test_cases/q2/backtracking5incorrectpartial.test 
+
+PASS: test_cases/q2/minimumremainingvalues1singlevariable.test 
+
+PASS: test_cases/q2/minimumremainingvalues2mrvonly.test 
+
+PASS: test_cases/q2/minimumremainingvalues3degree.test 
+
+PASS: test_cases/q2/minimumremainingvalues4mixmrv.test 
+
+PASS: test_cases/q2/minimumremainingvalues5mixdegreetie.test 
+
+--------------------------------------------------------------------
+All tests passed for question q2
+--------------------------------------------------------------------
+
+____________________________________________________________________
+Testing question: q3
+--------------------------------------------------------------------
+PASS: test_cases/q3/backtracking1unsolvable.test 
+
+PASS: test_cases/q3/backtracking2noconstraints.test 
+
+PASS: test_cases/q3/backtracking3solvable1.test 
+
+PASS: test_cases/q3/backtracking4solvable2.test 
+
+PASS: test_cases/q3/backtracking5incorrectpartial.test 
+
+PASS: test_cases/q3/LCV1.test 
+
+PASS: test_cases/q3/LCVSudoku.test 
+
+PASS: test_cases/q3/LCVSudoku1.test 
+
+PASS: test_cases/q3/leastconstrainingvalue1single.test 
+
+PASS: test_cases/q3/leastconstrainingvalue2lcv.test 
+
+--------------------------------------------------------------------
+All tests passed for question q3
+--------------------------------------------------------------------
+
+____________________________________________________________________
+Testing question: q4
+--------------------------------------------------------------------
+PASS: test_cases/q4/backtracking1unsolvable.test 
+
+PASS: test_cases/q4/backtracking2noconstraints.test 
+
+PASS: test_cases/q4/backtracking3solvable1.test 
+
+PASS: test_cases/q4/backtracking4solvable2.test 
+
+PASS: test_cases/q4/backtracking5incorrectpartial.test 
+
+PASS: test_cases/q4/forwardchecking1noinferences.test 
+
+PASS: test_cases/q4/forwardchecking2inferencesnochaining.test 
+
+PASS: test_cases/q4/forwardchecking3inferenceschaining.test 
+
+PASS: test_cases/q4/forwardchecking4invalid1.test 
+
+PASS: test_cases/q4/forwardchecking5invalid2.test 
+
+PASS: test_cases/q4/forwardchecking6validnochaining.test 
+
+--------------------------------------------------------------------
+All tests passed for question q4
+--------------------------------------------------------------------
+
+____________________________________________________________________
+Testing question: q5
+--------------------------------------------------------------------
+PASS: test_cases/q5/backtracking1unsolvable.test 
+
+PASS: test_cases/q5/backtracking2noconstraints.test 
+
+PASS: test_cases/q5/backtracking3solvable1.test 
+
+PASS: test_cases/q5/backtracking4solvable2.test 
+
+PASS: test_cases/q5/backtracking5incorrectpartial.test 
+
+PASS: test_cases/q5/maintainarcconsistency1noinferences.test 
+
+PASS: test_cases/q5/maintainarcconsistency2inferencesnochaining.test 
+
+PASS: test_cases/q5/maintainarcconsistency3inferenceschaining.test 
+
+PASS: test_cases/q5/maintainarcconsistency4invalid1.test 
+
+PASS: test_cases/q5/maintainarcconsistency5invalid2.test 
+
+PASS: test_cases/q5/maintainarcconsistency6invalidchaining.test 
+
+--------------------------------------------------------------------
+All tests passed for question q5
+--------------------------------------------------------------------
+
+____________________________________________________________________
+Testing question: q6
+--------------------------------------------------------------------
+PASS: test_cases/q6/ac31noinferences.test 
+
+PASS: test_cases/q6/ac32connectedconsistent1.test 
+
+PASS: test_cases/q6/ac33connectedconsistent2.test 
+
+PASS: test_cases/q6/ac34connectedinconsistent1.test 
+
+PASS: test_cases/q6/ac35connectedinconsistent2.test 
+
+PASS: test_cases/q6/ac36disconnectedconsistent.test 
+
+PASS: test_cases/q6/ac37disconnectedinconsistent1.test 
+
+PASS: test_cases/q6/ac38disconnectedinconsistent2.test 
+
+PASS: test_cases/q6/backtracking1unsolvable.test 
+
+PASS: test_cases/q6/backtracking2noconstraints.test 
+
+PASS: test_cases/q6/backtracking3solvable1.test 
+
+PASS: test_cases/q6/backtracking4solvable2.test 
+
+PASS: test_cases/q6/sudoku1.test 
+
+--------------------------------------------------------------------
+All tests passed for question q6
+--------------------------------------------------------------------
+
+--------------------------------------------------------------------
+Autograder finished. Final score 18/18
+--------------------------------------------------------------------
