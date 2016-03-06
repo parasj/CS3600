@@ -1,0 +1,6 @@
+solve
+csp ExtraCredit/6queens.csp
+function leastConstrainingValuesHeuristic
+function minimumRemainingValuesHeuristic
+function maintainArcConsistency
+boolean True

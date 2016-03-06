@@ -547,3 +547,15 @@ def solve(csp, orderValuesMethod=leastConstrainingValuesHeuristic, selectVariabl
 		return assignment
 
 	return assignment.extractSolution()
+
+class QueenDoesNotAttack(BinaryConstraint):
+	def isSatisfied(self, value1, value2):
+		def plusMinusDifferent(a, a1, b, b1):
+			return ((a + a1 != b + b1) and (a - a1 != b - b1)) or ((a + b1 != b + a1) and (a - b1 != b - a1))
+
+		if value1 is not value2 and plusMinusDifferent(int(self.var1), int(value1), int(self.var2), int(value2)):
+			return True
+		return False
+
+	def __repr__(self):
+		return 'QueenDoesNotAttack (%s, %s)' % (str(self.var1), str(self.var2))
