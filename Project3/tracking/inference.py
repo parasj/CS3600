@@ -153,7 +153,7 @@ class ExactInference(InferenceModule):
             for p in self.legalPositions:
                 trueDistance = util.manhattanDistance(p, pacmanPosition)
                 if emissionModel[trueDistance] > 0:
-                    allPossible[p] = self.beliefs[p] * emissionModel[trueDistance]
+                    allPossible[p] = self.beliefs[p] * emissionModel[trueDistance]      # downweight based on probability
             allPossible.normalize()
 
         self.beliefs = allPossible
@@ -207,8 +207,16 @@ class ExactInference(InferenceModule):
         combine to give us a belief distribution over new positions after a time update from a particular position
         """
 
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        allPossible = util.Counter()
+        pacmanPosition = gameState.getPacmanPosition()
+        
+        for oldPos in self.legalPositions:
+            newPosDist = self.getPositionDistribution(self.setGhostPosition(gameState, oldPos))
+            for newPos, prob in newPosDist.items():
+                allPossible[newPos] += self.beliefs[oldPos] * prob      # marginal probability given sum of possible transitions
+        allPossible.normalize()
+        self.beliefs = allPossible
+        
 
     def getBeliefDistribution(self):
         return self.beliefs
