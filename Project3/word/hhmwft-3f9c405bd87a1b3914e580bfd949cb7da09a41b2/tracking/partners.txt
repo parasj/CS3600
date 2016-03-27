@@ -1,0 +1,2 @@
+cs188-hr,kristinechen@berkeley.edu,Kristine Chen
+cs188-hp,d.wang1991@gmail.com,Dan Wang
