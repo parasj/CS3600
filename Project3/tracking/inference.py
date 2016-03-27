@@ -252,7 +252,12 @@ class ParticleFilter(InferenceModule):
             dictionary (where there could be an associated weight with each position) is incorrect
             and will produce errors
         """
-        "*** YOUR CODE HERE ***"
+        
+        self.particles = []
+        for i in self.legalPositions:
+            for x in range(0, self.numParticles / len(self.legalPositions)):
+                self.particles.append(i)
+
 
     def observe(self, observation, gameState):
         """
