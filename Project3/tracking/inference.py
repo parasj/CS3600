@@ -468,7 +468,7 @@ class JointParticleFilter:
                 else:
                     trueDistance = util.manhattanDistance(particle[i], pacmanPosition)
                     prob *= emissionModels[i][trueDistance]
-                belief[particle] += prob
+            belief[particle] += prob
 
         if belief.totalCount() is 0:
             self.initializeParticles()
