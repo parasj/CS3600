@@ -470,15 +470,17 @@ class JointParticleFilter:
                     prob *= emissionModels[i][trueDistance]
             belief[particle] += prob
 
-        if belief.totalCount() is 0:
-            self.initializeParticles()
-            for i in range(self.numGhosts):
-                if noisyDistances[i] is None:
-                    self.particles = [self.getParticleWithGhostInJail(particle, i) for particle in self.particles]
+        belief.normalize()
+        if belief.totalCount() > 0:
+            # print belief.totalCount()
+            self.particles = [util.sample(belief) for i in range(self.numParticles)]
         else:
-            self.particles = []
-            for _ in range(self.numParticles):
-                self.particles.append(util.sample(belief))
+            self.initializeParticles()
+            for particle in self.particles:
+                for i in range(self.numGhosts):
+                    if noisyDistances[i] is None:
+                        particle = self.getParticleWithGhostInJail(particle, i)
+            
 
     def getParticleWithGhostInJail(self, particle, ghostIndex):
         particle = list(particle)
