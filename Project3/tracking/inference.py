@@ -252,11 +252,7 @@ class ParticleFilter(InferenceModule):
             dictionary (where there could be an associated weight with each position) is incorrect
             and will produce errors
         """
-        
-        self.particles = []
-        for i in self.legalPositions:
-            for x in range(0, self.numParticles / len(self.legalPositions)):
-                self.particles.append(i)
+        self.particles = [self.legalPositions[i % len(self.legalPositions)] for i in range(self.numParticles)]
 
 
     def observe(self, observation, gameState):
@@ -291,8 +287,22 @@ class ParticleFilter(InferenceModule):
         noisyDistance = observation
         emissionModel = busters.getObservationDistribution(noisyDistance)
         pacmanPosition = gameState.getPacmanPosition()
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+
+        if noisyDistance is not None:                                                   # Update belief distribution
+            belief = util.Counter()
+            for particle in self.particles:
+                trueDistance = util.manhattanDistance(particle, pacmanPosition)
+                belief[particle] += emissionModel[trueDistance]
+            belief.normalize()
+            if belief.totalCount() is 0:
+                self.initializeUniformly(gameState)
+            else:
+                self.particles = [util.sample(belief) for _ in range(self.numParticles)]
+
+        else:                                                                           # When a ghost is captured by Pacman, **all** particles should be updated so
+            jailLocation = self.getJailPosition()                                       # that the ghost appears in its prison cell, self.getJailPosition()
+            self.particles = [jailLocation for _ in range(self.numParticles)]
+
 
     def elapseTime(self, gameState):
         """
@@ -318,8 +328,11 @@ class ParticleFilter(InferenceModule):
           ghost locations conditioned on all evidence and time passage. This method
           essentially converts a list of particles into a belief distribution (a Counter object)
         """
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        beliefs = util.Counter()
+        for particle in self.particles:
+            beliefs[particle] += 1
+        beliefs.normalize()
+        return beliefs
 
 class MarginalInference(InferenceModule):
     "A wrapper around the JointInference module that returns marginal beliefs about ghosts."
