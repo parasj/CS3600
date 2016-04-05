@@ -75,7 +75,11 @@ class Tree:
         str
         The classification made with this tree.
     """
-    #YOUR CODE HERE
+    root = self.root
+    while root.isleaf is False:
+        root = root.children[classificationData[root.attr]]
+    return root.value
+    
   
 def getPertinentExamples(examples,attrName,attrValue):
     """
