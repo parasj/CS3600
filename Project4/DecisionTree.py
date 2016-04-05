@@ -1,5 +1,6 @@
 from math import log
 import itertools
+import sys
 
 class Node:
   """
@@ -228,7 +229,8 @@ def giniIndex(classCounts):
         float
         The gini score of this list of class value counts.
     """
-    #YOUR CODE HERE
+    s = sum(classCounts)
+    return 1 - sum([pow(float(c) / s, 2) for c in classCounts])
   
 def giniGain(examples,attrName,attrValues,className):
     """
@@ -246,7 +248,17 @@ def giniGain(examples,attrName,attrValues,className):
         float
         The summed gini index score of this list of class value counts.
     """
-    #YOUR CODE HERE
+    n = len(examples)
+    attrcounts = getAttributeCounts(examples, attrName, attrValues, className)
+
+    s = 0.0
+    for val, classCounts in attrcounts.iteritems():
+        s += float(len(getPertinentExamples(examples, attrName, val))) * giniIndex(classCounts.values()) / n
+
+    if s == 0:
+        return sys.maxint
+    else:
+        return 1.0 / s
     
 def makeTree(examples, attrValues,className,setScoreFunc,gainFunc):
     """
