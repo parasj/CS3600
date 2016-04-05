@@ -296,7 +296,22 @@ def makeSubtrees(remainingAttributes,examples,attributeValues,className,defaultL
         Node or LeafNode
         The classification tree node optimal for the remaining set of attributes.
     """
-    #YOUR CODE HERE
+    if len(examples) is 0:
+        return LeafNode(defaultLabel)
+    elif len(getClassCounts(examples, className).keys()) is 1:
+        return LeafNode(getClassCounts(examples, className).keys()[0])
+    elif len(remainingAttributes) is 0:
+        c = getMostCommonClass(examples, className)
+        return LeafNode(c)
+    else:
+        A = max(remainingAttributes, key=lambda x: gainFunc(examples, x, attributeValues[x], className))
+        newTree = Node(A)
+        for val in attributeValues[A]:
+            newAttrs = [i for i in remainingAttributes if i is not A]
+            exs = getPertinentExamples(examples, A, val)
+
+            newTree.children[val] = makeSubtrees(newAttrs, exs, attributeValues, className, getMostCommonClass(examples,className), setScoreFunc, gainFunc)
+        return newTree
 
 def makePrunedTree(examples, attrValues,className,setScoreFunc,gainFunc,q):
     """
