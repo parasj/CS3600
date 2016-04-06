@@ -356,9 +356,12 @@ def makePrunedSubtrees(remainingAttributes,examples,attributeValues,className,de
         Node or LeafNode
         The classification tree node optimal for the remaining set of attributes.
     """
+
+    classCounts = getClassCounts(examples, className)
+
     if len(examples) is 0:
         return LeafNode(defaultLabel)
-    elif len(getClassCounts(examples, className).keys()) is 1:
+    elif len(classCounts.keys()) is 1:
         return LeafNode(getClassCounts(examples, className).keys()[0])
     elif len(remainingAttributes) is 0:
         c = getMostCommonClass(examples, className)
@@ -366,7 +369,6 @@ def makePrunedSubtrees(remainingAttributes,examples,attributeValues,className,de
     else:
         A = max(remainingAttributes, key=lambda x: gainFunc(examples, x, attributeValues[x], className))
         attrCounts = getAttributeCounts(examples, A, attributeValues[A], className)
-        classCounts = getClassCounts(examples, className)
 
         dev = 0
         for val in attributeValues[A]:
