@@ -1,6 +1,7 @@
 from math import log
 import itertools
 import sys
+from scipy.stats.stats import chisqprob
 
 class Node:
   """
@@ -10,7 +11,7 @@ class Node:
   attr (str): The name of the attribute this node classifies by. 
   islead (boolean): whether this is a leaf. False.
   """
-  
+
   def __init__(self,attr):
     self.children = {}
     self.attr = attr
@@ -26,7 +27,7 @@ class LeafNode(Node):
     def __init__(self,value):
         self.value = value
         self.isleaf = True
-    
+
 class Tree:
   """
   A generic tree implementation with which to implement decision tree learning.
@@ -38,7 +39,7 @@ class Tree:
 
   def prettyPrint(self):
     print str(self)
-    
+
   def preorder(self,depth,node):
     if node is None:
       return '|---'*depth+str(None)+'\n'
@@ -49,7 +50,7 @@ class Tree:
       childStr = '|---'*depth
       childStr += '%s = %s'%(str(node.attr),str(val))
       string+=str(childStr)+"\n"+self.preorder(depth+1, node.children[val])
-    return string    
+    return string
 
   def count(self,node=None):
     if node is None:
@@ -60,11 +61,11 @@ class Tree:
     for child in node.children.values():
       if child is not None:
         count+= self.count(child)
-    return count  
+    return count
 
   def __str__(self):
     return self.preorder(0, self.root)
-  
+
   def classify(self, classificationData):
     """
     Uses the classification tree with the passed in classificationData.`
@@ -80,8 +81,8 @@ class Tree:
     while root.isleaf is False:
         root = root.children[classificationData[root.attr]]
     return root.value
-    
-  
+
+
 def getPertinentExamples(examples,attrName,attrValue):
     """
     Helper function to get a subset of a set of examples for a particular assignment 
@@ -98,7 +99,7 @@ def getPertinentExamples(examples,attrName,attrValue):
     """
     newExamples = [e for e in examples if e[attrName] == attrValue]
     return newExamples
-  
+
 def getClassCounts(examples,className):
     """
     Helper function to get a dictionary of counts of different class values
@@ -155,7 +156,7 @@ def getAttributeCounts(examples,attrName,attrValues,className):
     for v in attrValues:
         attributeCounts[v] = getClassCounts(getPertinentExamples(examples, attrName, v), className)
     return attributeCounts
-        
+
 
 def setEntropy(classCounts):
     """
@@ -179,7 +180,7 @@ def setEntropy(classCounts):
         p = (c * 1.0) / total
         s += p * log(p, 2)
     return -1.0 * s
-   
+
 
 def remainder(examples,attrName,attrValues,className):
     """
@@ -205,7 +206,7 @@ def remainder(examples,attrName,attrValues,className):
         remainder += float(pknk) / pn * setEntropy(attrcounts[v].values())
     return remainder
 
-          
+
 def infoGain(examples,attrName,attrValues,className):
     """
     Calculates the info gain value for given attribute and set of examples.
@@ -222,7 +223,7 @@ def infoGain(examples,attrName,attrValues,className):
         The gain score of this value assignment of the attribute.
     """
     return setEntropy(getClassCounts(examples, className).values()) - remainder(examples, attrName, attrValues, className)
-  
+
 def giniIndex(classCounts):
     """
     Calculates the gini value for the given list of class counts.
@@ -236,7 +237,7 @@ def giniIndex(classCounts):
     """
     s = sum(classCounts)
     return 1 - sum([pow(float(c) / s, 2) for c in classCounts])
-  
+
 def giniGain(examples,attrName,attrValues,className):
     """
     Return the inverse of the giniD function described in the instructions.
@@ -264,7 +265,7 @@ def giniGain(examples,attrName,attrValues,className):
         return sys.maxint
     else:
         return 1.0 / s
-    
+
 def makeTree(examples, attrValues,className,setScoreFunc,gainFunc):
     """
     Creates the classification tree for the given examples. Note that this is implemented - you
@@ -282,7 +283,7 @@ def makeTree(examples, attrValues,className,setScoreFunc,gainFunc):
     """
     remainingAttributes=attrValues.keys()
     return Tree(makeSubtrees(remainingAttributes,examples,attrValues,className,getMostCommonClass(examples,className),setScoreFunc,gainFunc))
-    
+
 def makeSubtrees(remainingAttributes,examples,attributeValues,className,defaultLabel,setScoreFunc,gainFunc):
     """
     Creates a classification tree Node and all its children. This returns a Node, which is the root
@@ -314,7 +315,6 @@ def makeSubtrees(remainingAttributes,examples,attributeValues,className,defaultL
         for val in attributeValues[A]:
             newAttrs = [i for i in remainingAttributes if i is not A]
             exs = getPertinentExamples(examples, A, val)
-
             newTree.children[val] = makeSubtrees(newAttrs, exs, attributeValues, className, getMostCommonClass(examples,className), setScoreFunc, gainFunc)
         return newTree
 
@@ -336,7 +336,7 @@ def makePrunedTree(examples, attrValues,className,setScoreFunc,gainFunc,q):
     """
     remainingAttributes=attrValues.keys()
     return Tree(makePrunedSubtrees(remainingAttributes,examples,attrValues,className,getMostCommonClass(examples,className),setScoreFunc,gainFunc,q))
-    
+
 def makePrunedSubtrees(remainingAttributes,examples,attributeValues,className,defaultLabel,setScoreFunc,gainFunc,q):
     """
     Creates a classification tree Node and all its children. This returns a Node, which is the root
@@ -356,4 +356,36 @@ def makePrunedSubtrees(remainingAttributes,examples,attributeValues,className,de
         Node or LeafNode
         The classification tree node optimal for the remaining set of attributes.
     """
-    #YOUR CODE HERE (Extra Credit)
+    if len(examples) is 0:
+        return LeafNode(defaultLabel)
+    elif len(getClassCounts(examples, className).keys()) is 1:
+        return LeafNode(getClassCounts(examples, className).keys()[0])
+    elif len(remainingAttributes) is 0:
+        c = getMostCommonClass(examples, className)
+        return LeafNode(c)
+    else:
+        A = max(remainingAttributes, key=lambda x: gainFunc(examples, x, attributeValues[x], className))
+        attrCounts = getAttributeCounts(examples, A, attributeValues[A], className)
+        classCounts = getClassCounts(examples, className)
+
+        dev = 0
+        for val in attributeValues[A]:
+            Dxmag = len(getPertinentExamples(examples, A, val))
+            for classVal in classCounts.keys():
+                if classVal in attrCounts[val].keys():
+                    px = float(attrCounts[val][classVal])
+                else:
+                    px = 0.0
+                pxhat = float(classCounts[classVal] * Dxmag) / float(len(examples))
+                dev += pow(px - pxhat, 2) / pxhat
+
+        if chisqprob(dev, len(attributeValues[A]) - 1) > q:
+            return LeafNode(getMostCommonClass(examples, className))
+        else:
+            newTree = Node(A)
+            for val in attributeValues[A]:
+                newTree.children[val] = makePrunedSubtrees([i for i in remainingAttributes if i is not A],
+                                                     getPertinentExamples(examples, A, val), attributeValues,
+                                                     className, getMostCommonClass(examples, className),
+                                                     setScoreFunc, gainFunc, q)
+            return newTree
