@@ -75,6 +75,7 @@ class Tree:
         str
         The classification made with this tree.
     """
+
     root = self.root
     while root.isleaf is False:
         root = root.children[classificationData[root.attr]]

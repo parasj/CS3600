@@ -276,3 +276,69 @@ data2TrainingExamples = [[1,1,1,1,0,1,1,1,0,1],
                          [1,0,1,0,1,1,1,0,0,1]]
 
 data2TestLabels = [1,0,0,0,1,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1]
+
+def getMushroomDataset(start = None, end = None):
+  """
+  Reads in and parses through the Mushroom dataset.
+  
+  Args:
+    start (int): optional line number to start dataset at
+    end (int): optional line number to end dataset at
+  Returns:
+    tuple<list<dictionary<str,str>>,
+          dictionary<str,list<str>>,
+          str,
+          list<str>>
+    
+    List of examples as dictionaries, a dictionary mapping each
+    attribute to all of its possible values, the name of the label
+    in the example dictionaries, and the list of possible label values.
+  """
+  examples=[]
+  attrValues={}
+  data = open("extra_credit_datasets/mushrooms-data.txt")
+  attrs = ['cap-shape', 'cap-surface', 'cap-color', 'bruises?', 'odor', 'gill-attachment', 'gill-spacing', 'gill-size', 'gill-color', 'stalk-shape', 'stalk-root', 'stalk-surface-above-ring', 'stalk-surface-below-ring', 'stalk-color-above-ring', 'stalk-color-below-ring', 'veil-type', 'veil-color', 'ring-number', 'ring-type', 'spore-print-color', 'population', 'habitat']
+  attr_values = [['b', 'c', 'x', 'f', 'k', 's'],
+                 ['f', 'g', 'y', 's'],
+                 ['n', 'b', 'c', 'g', 'r', 'p', 'u', 'r', 'w', 'y'],
+                 ['t', 'f'],
+                 ['a', 'l', 'c', 'y', 'f', 'm', 'n', 'p', 's'],
+                 ['a','d','f','n'],
+                 ['c','w','d'],
+                 ['b','n'],
+                 ['k','n','b','h','g','r','o','p','u','e','w','y'],
+                 ['e','t'],
+                 ['b','c','u','e','z','r','?'],
+                 ['f','y','k','s'],
+                 ['f','y','k','s'],
+                 ['n','b','c','g','o','p','e','w','y'],
+                 ['n','b','c','g','o','p','e','w','y'],
+                 ['p','u'],
+                 ['n','o','w','y'],
+                 ['n','o','t'],
+                 ['c','e','f','l','n','p','s','z'],
+                 ['k','n','b','h','r','o','u','w','y'],
+                 ['a','c','n','s','v','y'],
+                 ['g','l','m','p','u','w','d']]
+  labelValues = ['p', 'e']
+  for index in range(len(attrs)):
+    attrValues[attrs[index]]=attr_values[index]
+  for line in data:
+    dict = {}
+    examples.append(dict)
+    count=0
+    for val in line.split(','):
+      if count==0:
+        dict['label']=val
+      elif count==22:
+          dict[attrs[count - 1]] = val[:-1]
+      else:
+        dict[attrs[count - 1]]=val
+      count+=1
+  if start is not None and end is None:
+    examples = examples[start:]
+  elif start is None and end is not None:
+    examples = examples[:end]
+  elif start is not None and end is not None:
+    examples = examples[start:end]
+  return (examples,attrValues,'label',labelValues)
