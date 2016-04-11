@@ -56,8 +56,7 @@ class Perceptron(object):
         """
         inputs = [1.0] + inActs
         n = min(self.inSize, len(inputs))
-        weighted = [inputs[i] * self.weights[i] for i in range(n)]
-        return self.sigmoid(sum(weighted))
+        return self.sigmoid(sum([inputs[i] * self.weights[i] for i in range(n)]))
         
     def sigmoidDeriv(self, value):
         """
@@ -177,8 +176,7 @@ class NeuralNet(object):
         """
         out = [inActs]
         for layer in self.layers:
-            vec = [float(p.sigmoidActivation(out[-1])) for p in layer]
-            out.append(vec)
+            out.append([float(p.sigmoidActivation(out[-1])) for p in layer])
         return out
     
     def backPropLearning(self, examples, alpha):
