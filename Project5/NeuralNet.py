@@ -103,17 +103,14 @@ class Perceptron(object):
             float
             Return the total modification of all the weights (sum of each abs(modification))
         """
-        totalModification = 0
 
         inputs = [1.0] + inActs
         n = min(self.inSize, len(inputs))
 
-        for i in range(n):
-            weightDelta = alpha * inputs[i] * delta
-            totalModification += abs(weightDelta)
-            self.weights[i] += weightDelta
+        weightDeltas = [alpha * inputs[i] * delta for i in range(n)]
+        self.weights = [self.weights[i] + weightDeltas[i] for i in range(n)]
 
-        return totalModification
+        return sum([abs(v) for v in weightDeltas])
             
     def setRandomWeights(self):
         """
