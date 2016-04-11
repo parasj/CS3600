@@ -298,15 +298,19 @@ def buildNeuralNet(examples, alpha=0.1, weightChangeThreshold = 0.00008,hiddenLa
     """
     iteration=0
     trainError=0
-    weightMod=0
+    weightMod=sys.maxint
     
     """
     Iterate for as long as it takes to reach weight modification threshold
     """
-        #if iteration%10==0:
-        #    print '! on iteration %d; training error %f and weight change %f'%(iteration,trainError,weightMod)
-        #else :
-        #    print '.',
+    while iteration < maxItr and weightMod > weightChangeThreshold:
+        iteration += 1
+        trainError, weightMod = nnet.backPropLearning(examplesTrain, alpha)
+
+        if iteration%10==0:
+           print '! on iteration %d; training error %f and weight change %f'%(iteration,trainError,weightMod)
+        else :
+           print '.',
         
           
     time = datetime.now().time()
@@ -316,15 +320,25 @@ def buildNeuralNet(examples, alpha=0.1, weightChangeThreshold = 0.00008,hiddenLa
     Get the accuracy of your Neural Network on the test examples.
 	For each text example, you should first feedforward to get the NN outputs. Then, round the list of outputs from the output layer of the neural net.
 	If the entire rounded list from the NN matches with the known list from the test example, then add to testCorrect, else add to  testError.
-    """ 
-    
+    """
+
+
     testError = 0
-    testCorrect = 0     
+    testCorrect = 0
+
+    for example in examplesTest:
+        result = nnet.feedForward(example[0])[-1]
+        result = [int(round(i)) for i in result]
+        if all(map(lambda x, y: x is y, result, example[1])):
+            testCorrect +=1
+        else:
+            testError +=1
+
     
-    testAccuracy=0#num correct/num total
+    testAccuracy = float(testCorrect) / float(testCorrect + testError)
     
     print 'Feed Forward Test correctly classified %d, incorrectly classified %d, test percent error  %f\n'%(testCorrect,testError,testAccuracy)
     
-    """return something"""
+    return (nnet, testAccuracy)
 
 
