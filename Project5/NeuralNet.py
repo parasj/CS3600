@@ -214,15 +214,15 @@ class NeuralNet(object):
             #keep track of deltas to use in weight change
             deltas = []
             #Neural net output list
-            allLayerOutput = """FILL IN - neural net output list computation"""
+            allLayerOutput = self.feedForward(example[0])
             lastLayerOutput = allLayerOutput[-1]
             #Empty output layer delta list
             outDelta = []
             #iterate through all output layer neurons
             for outputNum in xrange(len(example[1])):
-                gPrime = self.outputLayer[outputNum].sigmoidActivationDeriv("""FILL IN""")
-                error = """FILL IN - error for this neuron"""
-                delta = """FILL IN - delta for this neuron"""
+                gPrime = self.outputLayer[outputNum].sigmoidActivationDeriv(allLayerOutput[-2])
+                error = float(example[1][outputNum] - lastLayerOutput[outputNum])
+                delta = error * gPrime
                 averageError+=error*error/2
                 outDelta.append(delta)
             deltas.append(outDelta)
@@ -237,10 +237,9 @@ class NeuralNet(object):
                 hiddenDelta = []
                 #Iterate through all neurons in this layer
                 for neuronNum in xrange(len(layer)):
-                    gPrime = layer[neuronNum].sigmoidActivationDeriv("""FILL IN""")
-                    delta = """FILL IN - delta for this neuron
-                               Carefully look at the equation here,
-                                it is easy to do this by intuition incorrectly"""
+                    gPrime = layer[neuronNum].sigmoidActivationDeriv(allLayerOutput[layerNum])
+                    # drop bias
+                    delta = gPrime * sum( map( lambda Xi, Yi : Xi.weights[neuronNum + 1] * Yi, nextLayer, deltas[0] ) )
                     hiddenDelta.append(delta)
                 deltas = [hiddenDelta]+deltas
             """Get output of all layers"""
@@ -252,7 +251,7 @@ class NeuralNet(object):
             for numLayer in xrange(0,self.numLayers):
                 layer = self.layers[numLayer]
                 for numNeuron in xrange(len(layer)):
-                    weightMod = layer[numNeuron].updateWeights("""FILL IN""")
+                    weightMod = layer[numNeuron].updateWeights(allLayerOutput[numLayer], alpha, deltas[numLayer][numNeuron])
                     averageWeightChange += weightMod
                     numWeights += layer[numNeuron].inSize
             #end for each example
