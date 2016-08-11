@@ -74,6 +74,53 @@ def getNNCarData(fileString ="datasets/car.data.txt", limit=100000 ):
     return examples
 
 
+def getNNExtraData(fileString ="datasets/extra.data.txt", limit=100000 ):
+    """
+    returns limit # of examples from extra data file
+    """
+    examples=[]
+    data = open(fileString)
+    lineNum = 0
+    for line in data:
+        inVec = [0.0,0.0,0.0,0.0]
+        outVec = [0,0,0]
+        count=0
+        for val in line.split(','):
+            if count==0:
+                inVec[count] = float(float(val) - 5.84) / 0.83
+            elif count==1:
+                inVec[count] = float(float(val) - 3.05) / 0.43
+            elif count==2:
+                inVec[count] = float(float(val) - 3.76) / 1.76
+            elif count==3:
+                inVec[count] = float(float(val) - 1.20) / 0.76
+            elif count==4:
+                val = val.strip()
+                if val == "Iris-setosa":
+                    outVec[0] = 1
+                elif val == "Iris-versicolor":
+                    outVec[1] = 1
+                elif val == "Iris-virginica":
+                    outVec[2] = 1
+            count+=1
+        examples.append((inVec,outVec))
+        lineNum += 1
+        if (lineNum >= limit):
+            break
+    random.shuffle(examples)
+    return examples
+
+
+def buildExamplesFromExtraData(size=100):
+    extraData = getNNExtraData()
+    extraDataTrainList = []
+    for cdRec in extraData:
+        extraDataTrainList.append((cdRec[0], cdRec[1]))
+    tests = len(extraDataTrainList)-size
+    extraDataTestList = [extraDataTrainList.pop(random.randint(0,tests+size-t-1)) for t in xrange(tests)]
+    return extraDataTrainList, extraDataTestList
+
+
 def buildExamplesFromPenData(size=10000):
     """
     build Neural-network friendly data struct

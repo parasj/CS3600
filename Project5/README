@@ -1,0 +1,5 @@
+To run XOR, run:
+	make xor
+
+To run the custom dataset, run:
+	make customdataset

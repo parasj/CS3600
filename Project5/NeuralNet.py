@@ -307,10 +307,10 @@ def buildNeuralNet(examples, alpha=0.1, weightChangeThreshold = 0.00008,hiddenLa
         iteration += 1
         trainError, weightMod = nnet.backPropLearning(examplesTrain, alpha)
 
-        if iteration%10==0:
-           print '! on iteration %d; training error %f and weight change %f'%(iteration,trainError,weightMod)
-        else :
-           print '.',
+        # if iteration%10==0:
+        #    print '! on iteration %d; training error %f and weight change %f'%(iteration,trainError,weightMod)
+        # else :
+        #    print '.',
         
           
     time = datetime.now().time()
